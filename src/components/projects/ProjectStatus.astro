@@ -1,0 +1,32 @@
+---
+type ProjectStatusValue = 'to-organize' | 'organizing' | 'archived';
+
+export const PROJECT_STATUS_LABELS: Record<ProjectStatusValue, string> = {
+	'to-organize': 'To organize',
+	organizing: 'Organizing',
+	archived: 'Archived',
+};
+
+interface Props {
+	status: ProjectStatusValue;
+}
+
+const { status } = Astro.props;
+const label = PROJECT_STATUS_LABELS[status];
+---
+
+<span class:list={['status', `status--${status}`]}>
+	{label}
+</span>
+
+<style>
+	.status {
+		display: inline-block;
+		padding: 0.125em 0.5em;
+		border: 1px solid rgb(var(--gray));
+		border-radius: 999px;
+		font-size: 0.85em;
+		color: rgb(var(--gray-dark));
+		white-space: nowrap;
+	}
+</style>

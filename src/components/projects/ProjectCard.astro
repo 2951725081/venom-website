@@ -1,0 +1,98 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from '../FormattedDate.astro';
+import ProjectStatus from './ProjectStatus.astro';
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, status, startDate, updatedDate, topics, summary } = project.data;
+// Normalize the base path (e.g. `/venom-website`) so links work with or
+// without a trailing slash in `import.meta.env.BASE_URL`.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const href = `${base}/projects/${project.id}/`;
+---
+
+<article class="project-card">
+	<h3 class="project-title">
+		<a href={href}>{title}</a>
+	</h3>
+	<div class="project-meta">
+		<ProjectStatus status={status} />
+		<span class="project-dates">
+			<FormattedDate date={startDate} />
+			{updatedDate && (
+				<>
+					{' – '}
+					<FormattedDate date={updatedDate} />
+				</>
+			)}
+		</span>
+	</div>
+	{topics.length > 0 && (
+		<ul class="project-topics" aria-label="Topics">
+			{topics.map((topic) => (
+				<li>{topic}</li>
+			))}
+		</ul>
+	)}
+	<p class="project-summary">{summary}</p>
+	<p class="project-link">
+		<a href={href} aria-label={`Read ${title}`}>Read more</a>
+	</p>
+</article>
+
+<style>
+	.project-card {
+		padding: 1em;
+		border: 1px solid rgb(var(--gray));
+		border-radius: 8px;
+	}
+	.project-title {
+		margin: 0 0 0.5em;
+	}
+	.project-title a {
+		color: rgb(var(--black));
+		text-decoration: none;
+	}
+	.project-title a:hover {
+		color: rgb(var(--accent));
+	}
+	.project-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75em;
+		margin-bottom: 0.5em;
+	}
+	.project-dates {
+		color: rgb(var(--gray));
+		font-size: 0.9em;
+	}
+	.project-topics {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5em;
+		margin: 0 0 0.5em;
+		padding: 0;
+		list-style-type: none;
+	}
+	.project-topics li {
+		padding: 0.125em 0.5em;
+		border-radius: 4px;
+		background: rgb(var(--gray-light));
+		font-size: 0.85em;
+	}
+	.project-summary {
+		margin: 0 0 0.5em;
+		color: rgb(var(--gray-dark));
+	}
+	.project-link {
+		margin: 0;
+	}
+	.project-link a {
+		color: rgb(var(--accent));
+	}
+</style>

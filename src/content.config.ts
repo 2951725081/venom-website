@@ -17,4 +17,20 @@ const blog = defineCollection({
 		}),
 });
 
-export const collections = { blog };
+const projects = defineCollection({
+	// Load Markdown files in the `src/content/projects/` directory.
+	loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
+	// Type-check frontmatter using a schema
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		status: z.enum(['to-organize', 'organizing', 'archived']),
+		startDate: z.coerce.date(),
+		updatedDate: z.coerce.date(),
+		topics: z.array(z.string()).default([]),
+		summary: z.string(),
+		nextStep: z.string().optional(),
+	}),
+});
+
+export const collections = { blog, projects };

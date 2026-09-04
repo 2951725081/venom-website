@@ -1,14 +1,13 @@
 // @ts-check
 
 import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
 import { defineConfig, fontProviders } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://2951725081.github.io',
 	base: '/venom-website',
-	integrations: [mdx(), sitemap()],
+	integrations: [mdx()],
 	fonts: [
 		{
 			provider: fontProviders.local(),

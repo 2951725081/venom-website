@@ -5,6 +5,13 @@ on:
   # 当推送到 main 分支时触发
   push:
     branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'astro.config.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
   
   # 允许手动触发
   workflow_dispatch:

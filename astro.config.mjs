@@ -2,12 +2,18 @@
 
 import mdx from '@astrojs/mdx';
 import { defineConfig, fontProviders } from 'astro/config';
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
 
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://2951725081.github.io',
 	base: '/venom-website',
 	integrations: [mdx()],
+	markdown: {
+		remarkPlugins: [remarkMath],
+		rehypePlugins: [rehypeKatex],
+	},
 	fonts: [
 		{
 			provider: fontProviders.local(),

@@ -5,10 +5,11 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import type { NoteSeries } from '../content/noteSeries';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & { series?: NoteSeries };
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, series } = Astro.props;
 ---
 
 <html lang="en">
@@ -52,6 +53,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			.last-updated-on {
 				font-style: italic;
 			}
+			.series-link { display: inline-block; margin-bottom: 1rem; font-size: 0.9rem; }
 		</style>
 	</head>
 
@@ -75,6 +77,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 							}
 						</div>
 						<h1>{title}</h1>
+						{series && <a class="series-link" href={`${import.meta.env.BASE_URL}/blog/series/${series.slug}/`}>所属专栏：{series.title}</a>}
 						<hr />
 					</div>
 					<slot />

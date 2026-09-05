@@ -1,0 +1,11 @@
+---
+const labels = {
+	'organizing': 'Organizing',
+	'to-organize': 'To organize',
+	'archived': 'Archived',
+};
+
+const { status } = Astro.props;
+---
+
+<span class={`status status-${status}`}>{labels[status]}</span>

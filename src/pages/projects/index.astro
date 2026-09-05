@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import ProjectCard from '../../components/projects/ProjectCard.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+
+const projects = (await getCollection('projects')).sort((a, b) => b.data.updatedDate.valueOf() - a.data.updatedDate.valueOf());
+const groups = [
+	{ status: 'organizing', label: 'Organizing' },
+	{ status: 'to-organize', label: 'To organize' },
+	{ status: 'archived', label: 'Archived' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head><BaseHead title={`Projects · ${SITE_TITLE}`} description={SITE_DESCRIPTION} /></head>
+	<body>
+		<Header />
+		<main>
+			<header class="page-header"><p class="eyebrow">Archive / Projects</p><h1>Projects</h1><p>Work in progress, completed experiments, and the decisions worth revisiting.</p></header>
+			{groups.map((group) => {
+				const items = projects.filter((project) => project.data.status === group.status);
+				return <section class="project-group"><h2>{group.label}</h2>{items.length ? <div class="project-grid">{items.map((project) => <ProjectCard project={project} />)}</div> : <p class="empty-state">No projects here yet.</p>}</section>;
+			})}
+		</main>
+		<Footer />
+	</body>
+</html>

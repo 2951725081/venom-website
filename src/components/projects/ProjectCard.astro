@@ -1,0 +1,16 @@
+---
+import FormattedDate from '../FormattedDate.astro';
+import ProjectStatus from './ProjectStatus.astro';
+
+const { project } = Astro.props;
+const href = `${import.meta.env.BASE_URL}projects/${project.id}/`;
+---
+
+<article class="project-card">
+	<div class="project-card__meta"><ProjectStatus status={project.data.status} /><FormattedDate date={project.data.updatedDate} /></div>
+	<h3><a href={href}>{project.data.title}</a></h3>
+	<p>{project.data.summary}</p>
+	<ul class="topics" aria-label="Topics">
+		{project.data.topics.map((topic) => <li>{topic}</li>)}
+	</ul>
+</article>

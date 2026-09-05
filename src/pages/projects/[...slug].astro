@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import ProjectStatus from '../../components/projects/ProjectStatus.astro';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+	const projects = await getCollection('projects');
+	return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<!doctype html>
+<html lang="en">
+	<head><BaseHead title={`${project.data.title} · ${SITE_TITLE}`} description={project.data.description} /></head>
+	<body>
+		<Header />
+		<main>
+			<article class="project-detail">
+				<a class="back-link" href={`${import.meta.env.BASE_URL}projects/`}>← All projects</a>
+				<p class="eyebrow">Project retrospective</p>
+				<h1>{project.data.title}</h1>
+				<p class="lead">{project.data.description}</p>
+				<div class="project-card__meta"><ProjectStatus status={project.data.status} /><span>Started <FormattedDate date={project.data.startDate} /></span><span>Updated <FormattedDate date={project.data.updatedDate} /></span></div>
+				<ul class="topics" aria-label="Topics">{project.data.topics.map((topic) => <li>{topic}</li>)}</ul>
+				<div class="prose"><Content /></div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>

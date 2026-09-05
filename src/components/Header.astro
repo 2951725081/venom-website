@@ -1,8 +1,26 @@
 ---
+import { getCollection } from 'astro:content';
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 
 const base = `${import.meta.env.BASE_URL}/`;
+const [notes, projects] = await Promise.all([getCollection('blog'), getCollection('projects')]);
+const searchItems = [
+	...notes.map((note) => ({
+		title: note.data.title,
+		description: note.data.description,
+		meta: [note.data.category, ...note.data.tags].join(' '),
+		url: `${base}blog/${note.id}/`,
+		type: 'Note',
+	})),
+	...projects.map((project) => ({
+		title: project.data.title,
+		description: project.data.description,
+		meta: [project.data.status, ...project.data.topics].join(' '),
+		url: `${base}projects/${project.id}/`,
+		type: 'Project',
+	})),
+];
 ---
 
 <header>
@@ -15,14 +33,68 @@ const base = `${import.meta.env.BASE_URL}/`;
 			<HeaderLink href={`${base}about/`}>About</HeaderLink>
 		</div>
 	</nav>
+	<form class="site-search" role="search">
+		<label for="site-search-input">Search archive</label>
+		<div class="search-input-row">
+			<input id="site-search-input" type="search" placeholder="搜索 Notes、Projects…" autocomplete="off" />
+			<button type="submit">搜索</button>
+		</div>
+		<div id="search-results" class="search-results" aria-live="polite"></div>
+	</form>
 </header>
+<script define:vars={{ searchItems }}>
+	const searchForm = document.querySelector('.site-search');
+	const searchInput = document.querySelector('#site-search-input');
+	const searchResults = document.querySelector('#search-results');
+	const items = searchItems;
+
+	function renderResults(query) {
+		const normalizedQuery = query.trim().toLocaleLowerCase();
+		if (!normalizedQuery) {
+			searchResults.replaceChildren();
+			return;
+		}
+		const matches = items.filter((item) => `${item.title} ${item.description} ${item.meta}`.toLocaleLowerCase().includes(normalizedQuery)).slice(0, 8);
+		searchResults.replaceChildren();
+		if (!matches.length) {
+			searchResults.textContent = '没有找到匹配内容';
+			return;
+		}
+		for (const item of matches) {
+			const link = document.createElement('a');
+			link.href = item.url;
+			link.className = 'search-result';
+			const title = document.createElement('strong');
+			title.textContent = item.title;
+			const meta = document.createElement('span');
+			meta.textContent = `${item.type} · ${item.meta}`;
+			link.append(title, meta);
+			searchResults.append(link);
+		}
+	}
+
+	searchInput.addEventListener('input', () => renderResults(searchInput.value));
+	searchForm.addEventListener('submit', (event) => {
+		event.preventDefault();
+		renderResults(searchInput.value);
+	});
+</script>
 <style>
-	header { margin: 0; padding: 0 1em; background: #fdfbf7; border-bottom: 1px solid rgba(var(--black), 0.12); }
+	header { margin: 0; padding: 0 1em 0.75rem; background: #fdfbf7; border-bottom: 1px solid rgba(var(--black), 0.12); }
 	h2 { margin: 0; font-size: 1em; }
 	h2 a, h2 a.active { text-decoration: none; }
 	nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 	nav a { padding: 1em 0.5em; color: rgb(var(--black)); border-bottom: 4px solid transparent; text-decoration: none; }
 	nav a.active { border-bottom-color: var(--accent); }
 	.internal-links { display: flex; flex-wrap: wrap; }
-	@media (max-width: 720px) { nav { align-items: flex-start; flex-direction: column; gap: 0; } .internal-links { width: 100%; } }
+	.site-search { max-width: 42rem; margin: 0.5rem auto 0; }
+	.site-search label { display: block; color: rgb(var(--gray)); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+	.search-input-row { display: flex; gap: 0.5rem; }
+	.search-input-row input { min-width: 0; flex: 1; border: 1px solid rgba(var(--black), 0.2); border-radius: 2px; background: #fff; padding: 0.45rem 0.65rem; color: rgb(var(--gray-dark)); font: inherit; font-size: 0.9rem; }
+	.search-input-row button { border: 1px solid var(--accent); background: var(--accent); color: #fff; padding: 0.45rem 0.8rem; font: inherit; font-size: 0.85rem; cursor: pointer; }
+	.search-results { display: grid; gap: 0.35rem; }
+	.search-result { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid rgba(var(--black), 0.1); padding: 0.35rem 0; color: rgb(var(--black)); font-size: 0.85rem; text-decoration: none; }
+	.search-result span { color: rgb(var(--gray)); font-size: 0.75rem; }
+	.search-result:hover { color: var(--accent); }
+	@media (max-width: 720px) { nav { align-items: flex-start; flex-direction: column; gap: 0; } .internal-links { width: 100%; } .search-result { align-items: flex-start; flex-direction: column; gap: 0; } }
 </style>

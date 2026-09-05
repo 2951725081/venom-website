@@ -3,7 +3,7 @@ import FormattedDate from '../FormattedDate.astro';
 import ProjectStatus from './ProjectStatus.astro';
 
 const { project } = Astro.props;
-const href = `${import.meta.env.BASE_URL}projects/${project.id}/`;
+const href = `${import.meta.env.BASE_URL}/projects/${project.id}/`;
 ---
 
 <article class="project-card">

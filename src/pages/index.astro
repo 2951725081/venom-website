@@ -9,6 +9,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 const projects = (await getCollection('projects')).sort((a, b) => b.data.updatedDate.valueOf() - a.data.updatedDate.valueOf());
 const notes = (await getCollection('blog')).sort((a, b) => (b.data.updatedDate ?? b.data.pubDate).valueOf() - (a.data.updatedDate ?? a.data.pubDate).valueOf()).slice(0, 4);
 const base = `${import.meta.env.BASE_URL}/`;
+const categoryLabels = { technical: '技术', course: '课程', reading: '阅读', observation: '观察' };
 ---
 
 <!doctype html>
@@ -19,7 +20,7 @@ const base = `${import.meta.env.BASE_URL}/`;
 		<main class="archive-home">
 			<section class="archive-intro"><p class="eyebrow">Personal workspace</p><h1>Personal Archive</h1><p class="lead">A quiet place to organize references, revisit project decisions, and keep the next step visible.</p></section>
 			<section><div class="section-heading"><h2>Current projects</h2><a href={`${base}projects/`}>View all</a></div>{projects.filter((project) => project.data.status === 'organizing').length ? <div class="project-grid">{projects.filter((project) => project.data.status === 'organizing').slice(0, 3).map((project) => <ProjectCard project={project} />)}</div> : <p class="empty-state">No projects are currently in progress.</p>}</section>
-			<section><div class="section-heading"><h2>Recently edited</h2><a href={`${base}blog/`}>View Notes</a></div>{notes.length ? <ul class="recent-list">{notes.map((note) => <li><a href={`${base}blog/${note.id}/`}>{note.data.title}</a><span>{note.data.category}</span></li>)}</ul> : <p class="empty-state">No Notes yet.</p>}</section>
+			<section><div class="section-heading"><h2>Recently edited</h2><a href={`${base}blog/`}>View Notes</a></div>{notes.length ? <ul class="recent-list">{notes.map((note) => <li><a href={`${base}blog/${note.id}/`}>{note.data.title}</a><span>{categoryLabels[note.data.category]}</span></li>)}</ul> : <p class="empty-state">No Notes yet.</p>}</section>
 			<section><div class="section-heading"><h2>Quick links</h2></div><div class="quick-links"><a href={`${base}projects/`}>Projects</a><a href={`${base}blog/`}>Notes</a><a href={`${base}about/`}>About this archive</a></div></section>
 		</main>
 		<Footer />

@@ -10,6 +10,12 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+const categoryLabels = {
+	technical: '技术',
+	course: '课程',
+	reading: '阅读',
+	observation: '观察',
+};
 ---
 
 <!doctype html>
@@ -101,7 +107,7 @@ const posts = (await getCollection('blog')).sort(
 										<Image width={720} height={360} src={post.data.heroImage} alt="" />
 									)}
 									<h4 class="title">{post.data.title}</h4>
-									<p class="category">{post.data.category}</p>
+							<p class="category">{categoryLabels[post.data.category]} · {post.data.tags.slice(0, 3).join(' / ')}</p>
 									<p class="date">
 										<FormattedDate date={post.data.pubDate} />
 									</p>

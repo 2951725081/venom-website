@@ -42,25 +42,30 @@ sigmoid function $\sigma (x)=\frac{1}{1+e^{-x}}$
 $y=A x,\ y为m*1列向量，\ x为n*1列向量，\ A为m*n矩阵$
 $求\frac{\partial y}{\partial x}$
 
-$$A=\begin{pmatrix}
+$$
+A=\begin{pmatrix}
 a_{11} & a_{12} &\cdots & a_{1n}\\
 a_{21} & a_{22} &\cdots & a_{2n}\\
 \cdots \\
 a_{m1} & a_{m2} &\cdots & a_{mn}\\
-\end{pmatrix}$$
+\end{pmatrix}
+$$
 求法：
 1. 将y向量看作一个整体，而将x向量展开，y分别对x中每一个分量进行求导
 2. 把结果中的y展开为分量，然后依据y向量是行向量还是列向量对这些分量进行排列
 
-$$\frac{\partial y}{\partial x}=\begin{pmatrix}
+$$
+\frac{\partial y}{\partial x}=\begin{pmatrix}
 \frac{\partial y}{\partial x_1}\\
 \frac{\partial y}{\partial x_2}\\
 \cdots\\
 \frac{\partial y}{\partial x_n}\\
-\end{pmatrix}$$
+\end{pmatrix}
+$$
 然后将结果中的y分别换成$y_1, y_2, \cdots y_m$ 
 例如本示例中y为列向量，所以第一个$\frac{\partial y}{\partial x_1}$为
-$$\begin{pmatrix}
+$$
+\begin{pmatrix}
 \frac{\partial y_1}{\partial x_1}\\
 \frac{\partial y_2}{\partial x_1}\\
 \cdots\\
@@ -70,15 +75,19 @@ a_{11}\\
 a_{21}\\
 \cdots \\
 a_{m1}\\
-\end{pmatrix}$$
+\end{pmatrix}
+$$
 将这m个求导结果排列得到最终结果。
 通常情况下解释y向量是列向量也按照行向量来进行求导，因为如果用以上则会得到超越矩阵，矩阵的每个元素仍然是一个矩阵，在实践层面不利于推导。
-所以最终结果$$\frac{\partial y}{\partial x}=\begin{pmatrix}
+所以最终结果
+$$
+\frac{\partial y}{\partial x}=\begin{pmatrix}
 a_{11} & \cdots & a_{m1}\\
 a_{12} & \cdots & a_{m2}\\
 \cdots \\
 a_{1n} & \cdots & a_{mn}\\
-\end{pmatrix}=A^T,\ n*m矩阵$$
+\end{pmatrix}=A^T,\ n*m矩阵
+$$
 
 如果矩阵对矩阵求导，结果为Jacobian matrices
 
@@ -89,4 +98,3 @@ a_{1n} & \cdots & a_{mn}\\
 - **我已经掌握**：用自己的话概括「CS231n 4：卷积神经网络」中的一个核心概念，并配一个最小例子。
 - **下一步**：补充一次可运行的代码实验或手算推导，记录输入、输出和遇到的问题。
 - **关联**：将本篇与同主题笔记串起来，形成从概念到实践的学习路径。
-
